@@ -19,15 +19,7 @@ protected:
         CapacityX(BeginX + N) {}
 
     virtual ~MySmallVectorImpl() {
-        if constexpr (!std::is_trivially_destructible_v<T>) {
-            for (T* It = BeginX; It != EndX; ++It) {
-                It->~T();
-            }
-        }
-
-        if (!isSmall()) {
-            free(BeginX);
-        }
+        destroy_all();
     }
     
     MySmallVectorImpl(const MySmallVectorImpl&) = delete;
@@ -44,6 +36,26 @@ public:
 
     bool isSmall() const {
         return BeginX == reinterpret_cast<const T*>(this + 1);
+    }
+
+    void destroy_all() {
+        if constexpr (!std::is_trivially_destructible_v<T>) {
+            for (T* It = BeginX; It != EndX; ++It) {
+                It->~T();
+            }
+        }
+
+        if (!isSmall()) {
+            free(BeginX);
+        }
+    }
+
+    void destroy_range(T* First, T* Last) {
+        if constexpr (!std::is_trivially_destructible_v<T>) {
+            for (T* It = First; It != Last; ++It) {
+                It->~T();
+            }
+        }
     }
 
     void grow(size_t MinSize) {
