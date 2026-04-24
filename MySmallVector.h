@@ -61,13 +61,13 @@ public:
     void grow(size_t MinSize) {
         // Implementation of grow logic to allocate new memory and move elements
         size_t NewCapacity = std::max(capacity() * 2, MinSize);
-        T* NewBufffer = (T*)malloc(NewCapacity * sizeof(T));
-        if (!NewBufffer) {
+        T* NewBuffer = (T*)malloc(NewCapacity * sizeof(T));
+        if (!NewBuffer) {
             throw std::bad_alloc();
         }
         // Move existing elements to the new buffer
         if constexpr (std::is_trivially_copyable_v<T>) {
-            std::memcpy(NewBufffer, BeginX, size() * sizeof(T));
+            std::memcpy(NewBuffer, BeginX, size() * sizeof(T));
         } else {
             for (size_t i = 0; i < size(); ++i) {
                 new (NewBufffer + i) T(std::move(BeginX[i]));
