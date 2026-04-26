@@ -1,6 +1,11 @@
 #include <iostream>
+#include "MySmallVector.h"
 int main() {
-    std::cout << alignof(std::max_align_t) << std::endl;
-    std::cout << alignof(int) << std::endl;
-    std::cout << alignof(double) << std::endl;
+    MySmallVector<int, 8> MVec;
+    int Val = 1;
+    MVec.push_back(Val);
+    std::cout << MVec[0] << std::endl;
 }
+
+
+
